@@ -1,12 +1,15 @@
 package listaDeAlumnos
 
+import androidx.compose.animation.core.keyframes
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -17,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -113,10 +117,22 @@ fun aniadirAlumno(
 
     ){
         TextField(
-            modifier = Modifier.focusRequester(focusRequester),
+            modifier = Modifier
+                .onKeyEvent {
+                    if (it.type == KeyEventType.KeyDown && it.key == Key.Enter){
+                        onAniadirTexto()
+                        true
+                    }else{
+                        false
+                    }
+                }
+                .focusRequester(focusRequester)
+
+            ,
             value = inputTexto,
             onValueChange = oncambioTexto,
-            label = { Text("Nuevo Elemento") }
+            label = { Text("Nuevo Elemento") },
+
 
         )
 
