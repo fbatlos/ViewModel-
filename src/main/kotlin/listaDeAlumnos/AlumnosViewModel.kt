@@ -30,6 +30,7 @@ class AlumnosViewModel {
     fun addEstudiante() {
         if (_inputTexto.isNotBlank()) {
             _lista += _inputTexto
+            file.writer()
             manejadorDeFicheros.escribir(file,_lista)
             _mensajeInfo = "Se añadió un alumno."
             _showInfo = true
@@ -38,6 +39,7 @@ class AlumnosViewModel {
 
     fun deleteEstudiante(index: Int) {
         _lista = _lista.toMutableList().apply { removeAt(index) }
+        file.writer()
         manejadorDeFicheros.escribir(file,_lista)
         _mensajeInfo = "Alumno eliminado."
         _showInfo = true
@@ -45,12 +47,13 @@ class AlumnosViewModel {
 
     fun limpiarLista() {
         _lista = emptyList()
-        manejadorDeFicheros.escribir(file,_lista)
+        file.writer()
         _mensajeInfo = "Lista limpiada."
         _showInfo = true
     }
 
     fun guardado() {
+        file.writer()
         manejadorDeFicheros.escribir(file,_lista)
         _mensajeInfo = "Se guardó la lista."
         _showInfo = true
@@ -62,6 +65,8 @@ class AlumnosViewModel {
 
     fun onInfoMensajeDismissed() {
         _mensajeInfo = ""
-        newStudentFocusRequester.requestFocus()
+    }
+    fun textoCambia(estudiante:String){
+        _inputTexto = estudiante
     }
 }

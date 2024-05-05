@@ -47,11 +47,12 @@ fun listado(viewModel: AlumnosViewModel = remember { AlumnosViewModel() }) {
         ) {
             aniadirAlumno(
                 inputTexto = viewModel.inputTexto,
-                oncambioTexto = { inputTexto = it },
-                onAniadirTexto = {viewModel.addEstudiante()
-                                 newStudentFocusRequester.requestFocus()
-                                 }
-                ,
+                oncambioTexto = { viewModel.textoCambia(it)  },
+                onAniadirTexto = {
+                    viewModel.addEstudiante()
+                    viewModel.textoCambia("")
+                    newStudentFocusRequester.requestFocus()
+                },
                 focusRequester = newStudentFocusRequester
             )
 
@@ -85,7 +86,6 @@ fun listado(viewModel: AlumnosViewModel = remember { AlumnosViewModel() }) {
             mensaje = viewModel.mensajeInfo,
             onDismmis = {
                 viewModel.dismissInfoMensaje()
-                newStudentFocusRequester.requestFocus()
             }
         )
     }
@@ -95,7 +95,6 @@ fun listado(viewModel: AlumnosViewModel = remember { AlumnosViewModel() }) {
             delay(2000)
             viewModel.dismissInfoMensaje()
             viewModel.onInfoMensajeDismissed()
-            newStudentFocusRequester.requestFocus()
         }
     }
 }
