@@ -9,6 +9,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import listaDeAlumnos.BDD.AlumnosViewModelBD
+import listaDeAlumnos.BDD.Database
+import listaDeAlumnos.BDD.EstudianteRepo
+import listaDeAlumnos.File.File
 
 
 fun main() = application {
@@ -18,12 +22,28 @@ fun main() = application {
         title = "Diego me mata.",
         state = windowState
     ){
-        val manejoFichero = File()
+        val eleccion = RadioButton()
 
-        val ViewModel = AlumnosViewModel(manejoFichero)
+        if (eleccion == tipoVM.File) {
+            val manejoFichero = File()
 
-        listado(ViewModel)
+            val ViewModelfile = AlumnosViewModelFile(manejoFichero)
 
+            listado(ViewModelfile)
+
+        }else{
+
+            val manejobd = EstudianteRepo()
+
+            Database.getConnection()
+
+            val ViewModelbd = AlumnosViewModelBD(manejobd)
+
+            listado(ViewModelbd)
+
+
+
+        }
 
     }
 }

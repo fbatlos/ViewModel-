@@ -1,8 +1,6 @@
-package listaDeAlumnos
+package listaDeAlumnos.Interfaces
 
-import java.io.File
-
-interface IAlumnosViewModel {
+interface IAlumnosViewModel{
     val inputTexto:String
 
     val lista: List<String>

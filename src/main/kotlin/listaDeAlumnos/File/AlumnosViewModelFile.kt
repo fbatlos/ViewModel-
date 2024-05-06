@@ -3,12 +3,14 @@ package listaDeAlumnos
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.focus.FocusRequester
+import listaDeAlumnos.Interfaces.IAlumnosViewModel
+import listaDeAlumnos.Interfaces.IAlumnosViewModelFile
+import listaDeAlumnos.Interfaces.IFile
 import java.io.File
 
-class AlumnosViewModel( val manejadorDeFicheros:IFile):IAlumnosViewModel {
+class AlumnosViewModelFile(val manejadorDeFicheros: IFile): IAlumnosViewModelFile, IAlumnosViewModel {
 
-    val file = File(System.getProperty("user.dir") + "\\src\\main\\kotlin\\listaDeAlumnos\\estudiantes.txt")
+    val file = File(System.getProperty("user.dir") + "\\src\\main\\kotlin\\listaDeAlumnos\\File\\estudiantes.txt")
 
     private var _inputTexto by mutableStateOf("")
 

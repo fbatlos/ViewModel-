@@ -1,4 +1,4 @@
-package listaDeAlumnos
+package listaDeAlumnos.Interfaces
 
 import java.io.File
 

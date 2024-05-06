@@ -1,8 +1,9 @@
-package listaDeAlumnos
+package listaDeAlumnos.File
 
+import listaDeAlumnos.Interfaces.IFile
 import java.io.File
 
-class File:IFile {
+class File: IFile {
     override fun escribir(fichero: File, info: List<String>) {
         try {
             info?.forEach {fichero.appendText("$it \n")}
