@@ -18,8 +18,11 @@ fun main() = application {
         title = "Diego me mata.",
         state = windowState
     ){
+        val manejoFichero = File()
 
-        listado()
+        val ViewModel = AlumnosViewModel(manejoFichero)
+
+        listado(ViewModel)
 
 
     }

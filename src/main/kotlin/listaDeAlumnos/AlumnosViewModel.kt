@@ -6,28 +6,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import java.io.File
 
-class AlumnosViewModel {
-    val manejadorDeFicheros = File()
+class AlumnosViewModel( val manejadorDeFicheros:IFile):IAlumnosViewModel {
 
-    private val file = File(System.getProperty("user.dir") + "\\src\\main\\kotlin\\listaDeAlumnos\\estudiantes.txt")
+    val file = File(System.getProperty("user.dir") + "\\src\\main\\kotlin\\listaDeAlumnos\\estudiantes.txt")
 
     private var _inputTexto by mutableStateOf("")
 
-    val inputTexto get() = _inputTexto
+    override val inputTexto get() = _inputTexto
 
     private var _lista by mutableStateOf(manejadorDeFicheros.leer(file))
-    val lista: List<String> get() = _lista
+
+    override val lista: List<String> get() = _lista
 
     private var _mensajeInfo by mutableStateOf("")
-    val mensajeInfo: String get() = _mensajeInfo
+
+    override val mensajeInfo: String get() = _mensajeInfo
 
     private var _showInfo by mutableStateOf(false)
-    val showInfo: Boolean get() = _showInfo
 
-    private val newStudentFocusRequester = FocusRequester()
+    override val showInfo: Boolean get() = _showInfo
 
 
-    fun addEstudiante() {
+    override fun addEstudiante() {
         if (_inputTexto.isNotBlank()) {
             _lista += _inputTexto
             file.writer()
@@ -37,7 +37,7 @@ class AlumnosViewModel {
         }
     }
 
-    fun deleteEstudiante(index: Int) {
+    override fun deleteEstudiante(index: Int) {
         _lista = _lista.toMutableList().apply { removeAt(index) }
         file.writer()
         manejadorDeFicheros.escribir(file,_lista)
@@ -45,28 +45,28 @@ class AlumnosViewModel {
         _showInfo = true
     }
 
-    fun limpiarLista() {
+    override fun limpiarLista() {
         _lista = emptyList()
         file.writer()
         _mensajeInfo = "Lista limpiada."
         _showInfo = true
     }
 
-    fun guardado() {
+    override fun guardado() {
         file.writer()
         manejadorDeFicheros.escribir(file,_lista)
         _mensajeInfo = "Se guardó la lista."
         _showInfo = true
     }
 
-    fun dismissInfoMensaje() {
+    override fun dismissInfoMensaje() {
         _showInfo = false
     }
 
-    fun onInfoMensajeDismissed() {
+    override fun onInfoMensajeDismissed() {
         _mensajeInfo = ""
     }
-    fun textoCambia(estudiante:String){
+    override fun textoCambia(estudiante:String){
         _inputTexto = estudiante
     }
 }

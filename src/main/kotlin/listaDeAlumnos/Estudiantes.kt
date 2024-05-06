@@ -31,12 +31,11 @@ import java.io.File
 
 @Composable
 @Preview
-fun listado(viewModel: AlumnosViewModel = remember { AlumnosViewModel() }) {
+fun listado(viewModel: AlumnosViewModel) {
 
 
     val newStudentFocusRequester = remember { FocusRequester()}
 
-    var inputTexto by remember { mutableStateOf("") }
 
 
     Column(
