@@ -7,7 +7,7 @@ import listaDeAlumnos.Interfaces.IAlumnosViewModel
 import listaDeAlumnos.Interfaces.IRepo
 import java.sql.Connection
 
-class AlumnosViewModelBD( repo: IRepo): IAlumnosViewModel {
+class AlumnosViewModelBD(val repo: IRepo): IAlumnosViewModel {
 
     private var _inputTexto by mutableStateOf("")
 
@@ -26,11 +26,49 @@ class AlumnosViewModelBD( repo: IRepo): IAlumnosViewModel {
     override val showInfo: Boolean get() = _showInfo
 
     override fun addEstudiante() {
-        updateStudents(_lista.getOrThrow())
+        if (_inputTexto.isNotBlank()) {
+            var connectionDb: Connection? = null
+            try {
+                connectionDb = Database.getConnection()
+                connectionDb.autoCommit = false
+                connectionDb.prepareStatement("INSERT INTO students (name) VALUES (?)").use { ps ->
+                    ps.setString(1,_inputTexto)
+                    ps.executeUpdate()
+                }
+                _mensajeInfo = "Se añadió un alumno."
+                _showInfo = true
+                _lista = repo.getAllStudents()
+                Result.success(Unit)
+            } catch (e: Exception) {
+                connectionDb?.rollback()
+                Result.failure(e)
+            } finally {
+                connectionDb?.autoCommit = true
+                connectionDb?.close()
+            }
+        }
     }
 
     override fun deleteEstudiante(index: Int) {
-        TODO("Not yet implemented")
+        var connectionDb: Connection? = null
+        try {
+            connectionDb = Database.getConnection()
+            connectionDb.autoCommit = false
+            connectionDb.prepareStatement("delete from students where (id) = (?);").use { ps ->
+                ps.setString(1,(_lista.getOrThrow()[index]))
+                ps.execute()
+            }
+            _mensajeInfo = "Alumno eliminado."
+            _showInfo = true
+            _lista = repo.getAllStudents()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            connectionDb?.rollback()
+            Result.failure(e)
+        } finally {
+            connectionDb?.autoCommit = true
+            connectionDb?.close()
+        }
     }
 
     override fun limpiarLista() {
@@ -38,19 +76,29 @@ class AlumnosViewModelBD( repo: IRepo): IAlumnosViewModel {
     }
 
     override fun guardado() {
-        TODO("Not yet implemented")
+        var connectionDb: Connection? = null
+        try {
+            connectionDb = Database.getConnection()
+            connectionDb.autoCommit = false
+            connectionDb.commit()
+        } catch (e: Exception) {
+            connectionDb?.rollback()
+        } finally {
+            connectionDb?.autoCommit = true
+            connectionDb?.close()
+        }
     }
 
     override fun dismissInfoMensaje() {
-        TODO("Not yet implemented")
+        _showInfo = false
     }
 
     override fun onInfoMensajeDismissed() {
-        TODO("Not yet implemented")
+        _mensajeInfo = ""
     }
 
     override fun textoCambia(estudiante: String) {
-        TODO("Not yet implemented")
+        _inputTexto = estudiante
     }
 }
 
