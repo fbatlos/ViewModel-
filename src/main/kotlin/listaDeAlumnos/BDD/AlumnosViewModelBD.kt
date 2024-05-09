@@ -13,9 +13,9 @@ class AlumnosViewModelBD(val repo: IRepo): IAlumnosViewModel {
 
     override val inputTexto get() = _inputTexto
 
-    private var _lista by mutableStateOf(repo.getAllStudents())
+    private var _lista by mutableStateOf(repo.getAllStudents().getOrThrow())
 
-    override val lista: List<String> get() = _lista.getOrThrow()
+    override val lista: List<String> get() = _lista
 
     private var _mensajeInfo by mutableStateOf("")
 
@@ -27,66 +27,28 @@ class AlumnosViewModelBD(val repo: IRepo): IAlumnosViewModel {
 
     override fun addEstudiante() {
         if (_inputTexto.isNotBlank()) {
-            var connectionDb: Connection? = null
-            try {
-                connectionDb = Database.getConnection()
-                connectionDb.autoCommit = false
-                connectionDb.prepareStatement("INSERT INTO students (name) VALUES (?)").use { ps ->
-                    ps.setString(1,_inputTexto)
-                    ps.executeUpdate()
-                }
-                _mensajeInfo = "Se añadió un alumno."
-                _showInfo = true
-                _lista = repo.getAllStudents()
-                Result.success(Unit)
-            } catch (e: Exception) {
-                connectionDb?.rollback()
-                Result.failure(e)
-            } finally {
-                connectionDb?.autoCommit = true
-                connectionDb?.close()
-            }
+            _mensajeInfo = "Se añadió un alumno."
+            _showInfo = true
+            _lista += _inputTexto
         }
     }
 
     override fun deleteEstudiante(index: Int) {
-        var connectionDb: Connection? = null
-        try {
-            connectionDb = Database.getConnection()
-            connectionDb.autoCommit = false
-            connectionDb.prepareStatement("delete from students where (id) = (?);").use { ps ->
-                ps.setString(1,(_lista.getOrThrow()[index]))
-                ps.execute()
-            }
+            _lista = _lista.toMutableList().apply { removeAt(index) }
             _mensajeInfo = "Alumno eliminado."
             _showInfo = true
-            _lista = repo.getAllStudents()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            connectionDb?.rollback()
-            Result.failure(e)
-        } finally {
-            connectionDb?.autoCommit = true
-            connectionDb?.close()
-        }
     }
 
     override fun limpiarLista() {
-        TODO("Not yet implemented")
+        _lista = emptyList()
+        _mensajeInfo = "Lista limpiada."
+        _showInfo = true
     }
 
     override fun guardado() {
-        var connectionDb: Connection? = null
-        try {
-            connectionDb = Database.getConnection()
-            connectionDb.autoCommit = false
-            connectionDb.commit()
-        } catch (e: Exception) {
-            connectionDb?.rollback()
-        } finally {
-            connectionDb?.autoCommit = true
-            connectionDb?.close()
-        }
+       updateStudents(_lista)
+        _mensajeInfo = "Se guardó la lista."
+        _showInfo = true
     }
 
     override fun dismissInfoMensaje() {
