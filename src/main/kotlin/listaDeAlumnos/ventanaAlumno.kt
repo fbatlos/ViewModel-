@@ -14,7 +14,7 @@ import androidx.compose.ui.window.rememberWindowState
 import org.jetbrains.skia.paragraph.Alignment
 
 @Composable
-fun AlumnoWindow(onClose: () -> Unit , alumnoNombre:String , onEliminar:() -> Unit , onVolver:(String) -> Unit) {
+fun AlumnoWindow(onClose: () -> Unit , alumnoNombre:String , onEliminar:(String) -> Unit , onVolver:(String) -> Unit) {
     val secondaryWindowState = rememberWindowState()
     Window(
         onCloseRequest = onClose,
@@ -39,7 +39,7 @@ fun AlumnoWindow(onClose: () -> Unit , alumnoNombre:String , onEliminar:() -> Un
 
             Row {
                 Button(
-                    onClick = {onEliminar()}
+                    onClick = {onEliminar("")}
                 ){
                     Text("Eliminar alumno")
                 }

@@ -1,12 +1,10 @@
 package listaDeAlumnos
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.VerticalScrollbar
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -26,7 +24,7 @@ import listaDeAlumnos.Interfaces.IAlumnosViewModel
 
 @Composable
 @Preview
-fun listado(viewModel: IAlumnosViewModel) {
+fun listado(viewModel: IAlumnosViewModel,onNombre:(String)->Unit) {
 
 
     val newStudentFocusRequester = remember { FocusRequester()}
@@ -55,9 +53,11 @@ fun listado(viewModel: IAlumnosViewModel) {
             )
 
             Column {
-                scroll(items = viewModel.lista, onItemClick = {
+                scroll(items = viewModel.lista.toMutableList(), onItemClick = {
                     viewModel.deleteEstudiante(it)
-                }, requester = newStudentFocusRequester)
+                }, requester = newStudentFocusRequester,
+                    onAlumnoClicado = {onNombre(it)}
+                    )
                 limpiarListado (
                     onDelete = {
                         viewModel.limpiarLista()
@@ -158,14 +158,14 @@ fun limpiarListado(onDelete:() -> Unit , requester: FocusRequester){
     Button(
         onClick = onDelete
     ){
-        Text("Borrar listados.")
+        Text("Borrar listados")
     }
 }
 
 //Hacer con lazy
 @Composable
 @Preview
-fun scroll(items: List<String>, onItemClick: (Int) -> Unit,requester: FocusRequester){
+fun scroll(items: MutableList<String>, onItemClick: (Int) -> Unit,requester: FocusRequester,onAlumnoClicado:(String) -> Unit){
     Text("Estudiantes : ${items.size}")
     Column (
         modifier = Modifier.size(250.dp,400.dp)
@@ -179,7 +179,11 @@ fun scroll(items: List<String>, onItemClick: (Int) -> Unit,requester: FocusReque
         //Creará el scroll asignado y aunque cambie las dimensiones no cambia el espacio
         LazyColumn(Modifier.fillMaxSize().padding(end = 10.dp), state) {
             items(items.size) { x ->
-                TextBox(items[x] , onClick = { onItemClick(x) })
+                TextBox(items[x] , onClick = { onItemClick(x) } , items[x] ,
+                    onAlumnoClick ={
+                        onAlumnoClicado(items[x])
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(5.dp))
             }
@@ -195,8 +199,9 @@ fun scroll(items: List<String>, onItemClick: (Int) -> Unit,requester: FocusReque
 
 
 @Composable
-fun TextBox(text: String, onClick: () -> Unit) {
+fun TextBox(text: String, onClick: () -> Unit , alumnoNombre:String , onAlumnoClick:(String) -> Unit) {
     OutlinedTextField(
+        modifier = Modifier.clickable { onAlumnoClick(alumnoNombre) },
         value = text,
         onValueChange = { /* No se necesita hacer nada aquí */ },
         enabled = false,
@@ -226,5 +231,9 @@ fun InfoMessage(mensaje: String,onDismmis:() -> Unit){
             Text(mensaje)
         }
     }
+}
+
+fun abrirInfoAlumn(){
+
 }
 
